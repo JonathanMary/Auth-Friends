@@ -2,21 +2,28 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 
+const initialFormValues = {
+    username: "",
+    password: "",
+}
+
 const Login = () => {
-    const [input, setInput] = useState({})
+    const [input, setInput] = useState(initialFormValues)
     const [isLoading, setIsLoading] = useState(false)
     const history = useHistory();
     
     const onChange = evt => {
-        setInput(evt.target.value)
+        console.log(evt.target.name)
+        setInput({...input, [evt.target.name]: evt.target.value})
+        console.log(input)
     }
 
     const loginRequest = evt => {
         evt.preventDefault();
         setIsLoading("Loading...");
-        axios.post("http://localhost:5000/api/login", { username: 'Lambda School', password: 'i<3Lambd4' })
+        axios.post("http://localhost:5000/api/login", input)
              .then(res => {
-                 console.log(res.data.payload)
+                 //console.log(res.data.payload)
                  localStorage.setItem("token", JSON.stringify(res.data.payload))
                  history.push("/privateroute")
                 })
@@ -28,8 +35,8 @@ const Login = () => {
     return (
     <>
     <form>
-        <input type="text" onChange={onChange} ></input>
-        <input type="password" onChange={onChange} ></input>
+        <input type="text" onChange={onChange} value={input.username} name="username" placeholder="username..." ></input>
+        <input type="password" onChange={onChange} value={input.password} name="password" placeholder="password" ></input>
         <button onClick={loginRequest}>Login</button>
     </form>
     <p>{isLoading}</p>

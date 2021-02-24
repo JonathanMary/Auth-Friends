@@ -12,29 +12,27 @@ const FriendsList = () => {
     const [friends, setFriends] = useState([]);
     const [newFriend, setNewFriend] = useState(initialFormValues);
     
+    const  onChange = evt => {
+        setNewFriend({...newFriend, [evt.target.name]: evt.target.value });
+    }
     
-        const  onChange = evt => {
-            setNewFriend({...newFriend, [evt.target.name]: evt.target.value });
-        }
-        
-        const onClick = evt => {
-            evt.preventDefault();
-            //setFriends([...friends, newFriend]);
-            axiosWithAuth()
-                    .post("/api/friends", newFriend)
-                    .then(res => console.log(res))
-                    .catch(err => console.log({ err }))
-        }
+    const onClick = evt => {
+        evt.preventDefault();
+        //setFriends([...friends, newFriend]);
+        axiosWithAuth()
+                .post("/api/friends", newFriend)
+                .then(res => setFriends(res.data))
+                .catch(err => console.log({ err }))
+    }
 
     useEffect(() => {
         axiosWithAuth()
                 .get("/api/friends")
                 .then(res => {
-                    console.log(res.data)
                     setFriends(res.data)
                 })
                 .catch(err => console.log({ err }));
-    }, [onClick]);
+    }, []);
 
     return(
         <div>
